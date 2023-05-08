@@ -14,32 +14,17 @@ fs.access(srcProject, err => {
 	if (err) {
 		createFolder()
 	} else {
-		fs.rm(srcProject, {recursive: true}, err => {
+		fs.rmdir(srcProject, {recursive: true}, err => {
 			if (err) throw err;
-			createFolder()
+			else {
+				createFolder()
+			}
 			// writeTemplate();
 		})
 	}
 })
 
-fs.readFile(srcTemplate, (err, data) => {
-	if (err) throw err;
-	else {
-		strTemplate = data.toString();
-		let re = /{{(.*?)}}/g;
-		replacingTemplate = strTemplate.match(re); // отсортированный массив со скобками;
-		for (let i = 0; i < replacingTemplate.length; i++) {
-			arrayTemplate.push(replacingTemplate[i].split(re)[1]);
-			replaceTemplate(arrayTemplate[i], i);
-			// if (i === replacingTemplate.length - 1) {
-			// 	writeTemplate();
-			// }
-		}
-		// createFolder
-	}
-})
-
-
+// CREATE FOLDER
 function createFolder() {
 	fs.mkdir(srcProject, {recursive: true}, err => {
 		if (err) throw err;
@@ -63,8 +48,30 @@ function createFolder() {
 		if (err) throw err;
 		console.log('Папка создана! Assets');
 	})
+	readFile();
 }
 
+// MAIN FUNC READ FILE AND WRITE TEMPLATE
+function readFile() {
+	fs.readFile(srcTemplate, (err, data) => {
+		if (err) throw err;
+		else {
+			strTemplate = data.toString();
+			let re = /{{(.*?)}}/g;
+			replacingTemplate = strTemplate.match(re); // отсортированный массив со скобками;
+			for (let i = 0; i < replacingTemplate.length; i++) {
+				arrayTemplate.push(replacingTemplate[i].split(re)[1]);
+				replaceTemplate(arrayTemplate[i], i);
+				// if (i === replacingTemplate.length - 1) {
+				// 	writeTemplate();
+				// }
+			}
+			// createFolder
+		}
+	})
+}
+
+// write Template HTML
 function writeTemplate() {
 	fs.writeFile(path.join(srcProject, 'index.html'), `${strTemplate}`, err => {
 		if (err) throw err;
