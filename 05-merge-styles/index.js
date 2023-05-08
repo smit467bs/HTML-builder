@@ -1,12 +1,12 @@
 const fs = require('fs');
 const path = require('path');
 
-const src = path.join(__dirname, 'styles');
+const srcMerge = path.join(__dirname, 'styles');
 const srcBundle = path.join(__dirname, 'project-dist', 'bundle.css');
-let array = [];
+let arrayMerge = [];
 
 
-fs.readdir(src, {withFileTypes: true}, (err, files) => {
+fs.readdir(srcMerge, {withFileTypes: true}, (err, files) => {
 	if (err) throw err;
 	else {
 		files.forEach(file => {
@@ -15,16 +15,16 @@ fs.readdir(src, {withFileTypes: true}, (err, files) => {
 				fs.readFile(srcFile, 'utf-8', (err, readingFile) => {
 					if (err) throw err;
 					else {
-						array.push(readingFile);
+						arrayMerge.push(readingFile);
 					}
 					fs.access(path.join(__dirname, 'project-dist', 'bundle.css'), err => {
 						if (err) {
-							fs.writeFile(srcBundle, `${[...array]}`, err => {
+							fs.writeFile(srcBundle, `${[...arrayMerge]}`, err => {
 								if (err) throw err;
 							})
 						} else {
 							fs.truncate(srcBundle, err => {
-								fs.appendFile(srcBundle, `${[...array]}`, err => {
+								fs.appendFile(srcBundle, `${[...arrayMerge]}`, err => {
 									if (err) throw err;
 								});
 							});
@@ -34,6 +34,5 @@ fs.readdir(src, {withFileTypes: true}, (err, files) => {
 			}
 		})
 	}
-
 })
 

@@ -1,24 +1,23 @@
 const fs = require('fs');
 const path = require('path');
-const src = path.join(__dirname, 'files');
-const srcCopy = path.join(__dirname, 'files-copy');
+const srcCopy = path.join(__dirname, 'files');
+const srcCopied = path.join(__dirname, 'files-copy');
 
-function createFolder() {
-	fs.mkdir(srcCopy, {recursive: true}, err => {
+function createFolderCopy() {
+	fs.mkdir(srcCopied, {recursive: true}, err => {
 		if (err) throw err;
 
 		console.log('Папка создана!');
 	})
 }
-
 function copyFiles() {
-	fs.readdir(src,
+	fs.readdir(srcCopy,
 		{withFileTypes: true},
 		(err, files) => {
 			if (err) throw err;
 			files.forEach(file => {
-				fs.copyFile(path.join(src, `${file.name}`),
-					path.join(srcCopy, `${file.name}`),
+				fs.copyFile(path.join(srcCopy, `${file.name}`),
+					path.join(srcCopied, `${file.name}`),
 					err => {
 						if (err) throw err;
 						console.log(`${file.name} Скопирован`);
@@ -29,15 +28,15 @@ function copyFiles() {
 }
 
 
-fs.access(srcCopy, err => {
+fs.access(srcCopied, err => {
 	if (err) {
-		createFolder()
+		createFolderCopy()
 		copyFiles();
 
 	} else {
-		fs.rm(srcCopy, {recursive: true}, err => {
+		fs.rm(srcCopied, {recursive: true}, err => {
 			if (err) throw err;
-			createFolder()
+			createFolderCopy()
 			copyFiles();
 		})
 	}
